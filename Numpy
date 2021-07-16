@@ -1,0 +1,216 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 15 15:07:13 2021
+
+@author: darth
+"""
+
+import numpy as np
+import math
+
+#Crear Arrays
+a = np.array([1, 2, 3])
+print(a)
+
+#Podemos imprimir el numero de dimensiones de una lista usando ndim
+print(a.ndim)
+# Si pasamos una lista de listas a una matriz de numpy, creamos una matriz multidimensional, osea una matriz
+b = np.array([[1, 2, 3,],[4, 5, 6]])
+print(b)
+print(b.ndim)
+#Podemos imprimir la longitud de cada dimension usando shape el cual nos regresa una tumpla
+b.shape #dos filas tres columnas
+# podemos checar el tipo de los elementos en el array
+a.dtype
+#ademas los integers floats tambien son aceptados en los array de numpy
+c = np.array([2.2, 5, 1.1])
+c.dtype.name
+#veamos los datos de c
+print(c)
+#No hay perdida de precision, Numpy intentara dar el mejor formato de forma automatica
+#podemos crear matrices autollenadas
+d = np.zeros((2 , 3))
+print (d)
+
+e = np.ones((2, 3))
+print(e)
+
+#tambien podemos crear una con numeros aleatorios
+
+np.random.rand(2,3)
+
+#tambien podemos crear una matriz con ciertas caraterizticas con arange() el primer argumento es el
+#primer numero, el segundo argumento, es el numero final, y el tercer argumento es la diferencia entre cada
+#cumero consecutivo
+f = np.arange(10, 50, 2)
+print(f)
+#si queremos generar una secuencia de floats podemos usar linspace, en esta funcion el tercer argumento NO es la
+#diferencia entre dos numero, pero el numero total de elementos que quieres generar con un espaciado IGUAL
+np.linspace ( 0, 2, 15)
+
+
+#manipulacion matematica con arrays, suma, resta, raiz, division, exponente, podemos usar arrays booleanos,
+#producto entre matrices, transpocisionar, inversa, etc
+
+a = np.array([10, 20, 30, 40])
+b = np.array([1, 2, 3, 4])
+
+c = a - b
+print(c)
+
+d = a * b
+print(d)
+
+
+#conversion basica con arrays
+farenheit = np.array([0, -10, -5, -15, 0])
+celsius = (farenheit - 31) * (5/9)
+print(celsius)
+
+#producto DIRECTO Y PRODUCTO DE MATRICES
+A = np.array([[1, 1],[0, 1]])
+B = np.array([[2, 0],[3, 4]])
+
+print(A * B) #Producto directo
+print(A @ B) #Producto de matrices
+
+#una operacion entre integers y floats genera floats
+#operacion con arrays adicionales sum() suma numero de la matriz, max() elemento maximo de la matriz
+#min() elemento minimo de la matriz mean() media de los elementos de una matriz
+
+print(A.sum())
+print(A.max())
+print(A.min())
+print(A.mean())
+
+#creando una matriz con 15 elementos de 1 a 5 con dimension 3x5, tienes que escoger elementos LOGICOS
+b = np.arange(1, 16, 1).reshape(3,5)
+print(b)
+
+
+#imagen como matriz? podemos hacer el negativo de la imagen :O
+from PIL import Image
+from IPython.display import display
+
+im = Image.open('cuando-le-haces-ver-a.jpg')
+display(im)
+
+array=np.array(im)
+print(array.shape)
+print(array)
+
+mask = np.full(array.shape,255)
+print(mask)
+
+modified_array = array-mask
+modified_array = modified_array*-1
+
+modified_array= modified_array.astype(np.uint8)
+print(modified_array)
+
+display(Image.fromarray(modified_array))
+
+#CAMBIAR TAMAÑO IMAGEN? depende de la imagen 
+reshaped = np.reshape(modified_array, (631230 , 4001231000))
+print(reshaped.shape)
+display(Image.fromarray(reshaped))
+
+
+
+#Indexar, cortas e iterar
+#Indexing
+
+a = np.array([1, 2, 5, 7])
+print(a[2]) #unidimensional
+
+a = np.array([[1, 2],[3, 4],[5, 6]])
+print(a[2,1]) #Multidimencional
+
+#Haciendo matriz nueva a partir de matriz diferente
+
+np.array([a[0,0], a[1,1], a[2, 1]])
+
+#de otra forma
+
+print(a[[0,1,2],[0,1,1]]) 
+
+#Indexado Booleano
+
+print( a > 5)
+
+# puedes traer los resultados de una pregunta booleana de un elemento que exista en la matriz
+
+print(a[a>5])
+
+#Cortar matrices crea otra submatriz
+
+#matriz unidimensional 'desde donde: hasta donde SIN TOCARLO'
+a = np.array([0, 1, 2, 3, 4, 5,])
+print(a[:3])
+print(a[2:4])
+
+#Multidimensional
+
+a = np.array([[1, 2, 3, 4],[5, 6, 7, 8],[9, 10, 11, 12]])
+print(a)
+
+#usamos dos seleccionadores, primer argumento seleccion filas, y el segundo columnas
+
+a[:2, 1:3]
+
+#cambiando valores en la matriz
+sub_array = a[:2, 1:3]
+print('sub array index [0,0] value before change:', sub_array[0,0])
+sub_array[0,0] = 50
+print('sub array index [0,0] value after change:', sub_array[0,0])
+print('original array index [0,1] value after change:', sub_array[0,1])
+print(sub_array)
+print(a)
+
+
+#Trying Numpy with datasets
+wines = np.genfromtxt("winequality-red.csv", delimiter = ';', skip_header = 1) 
+print(wines)
+
+#para cortar info acuerdate de Gomila y su explicacion sobre matrices transpuestas aqui los dos ejemplos 
+print("one integer 0 for slicing:", wines[:, 0])
+print("0 to 1 for slicing: \n", wines[: ,0:1])
+
+#si queremos un rango de columnas en orden en este caso desde la columna 0 a la 3
+wines[:, 0:3]
+
+#si queremos varias columnas que no esten en orden usamos por ejemplo
+wines[: , [0,2,4]]
+
+#si queremos obtener la media de una columna en este caso para saber el promedio de calidad del vino segun el dataset
+#sabiendo que la ultima columna es la de calidad usamos
+wines[:, -1].mean()
+
+#usando un segundo dataset podemos hacer una matriz con 400 tuplas
+graduate_admission = np.genfromtxt('Admission_Predict.csv', dtype = None, delimiter = ',', skip_header= 1,
+                                   names=('Serial No','GRE Score', 'TOEFL Score', 'University Rating', 'SOP',
+                                          'LOR', 'CGPA', 'Research', 'Chance of Admit'))
+print(graduate_admission)
+graduate_admission.shape
+#podemos llamas a una sola columna en este caso la CGPA con sus primeros cinco valores
+graduate_admission['CGPA'][0:5]
+
+#Podemos convertir estos valores en este caso la calificacion en una escala de 0 a 4 como en EUA
+graduate_admission['CGPA']= graduate_admission['CGPA'] / 10 * 4
+graduate_admission['CGPA'][0:20] #solo los primeros 20 valores
+
+
+#usaremos un enmascarado booleano para saber cuandos alumnos hicieron un investigacion
+len(graduate_admission[graduate_admission['Research']==1]) 
+
+
+#podemos ver tambien respecto a porcentajes que cantidad de personas tienen mas posibilidades de entrar y quienes no
+# de una columna respecto a otra 
+
+print(graduate_admission[graduate_admission['Chance_of_Admit']>0.8]['GRE_Score'].mean())
+print(graduate_admission[graduate_admission['Chance_of_Admit']<0.4]['GRE_Score'].mean())
+
+# ahora con la columna cgpa
+
+print(graduate_admission[graduate_admission['Chance_of_Admit']>0.8]['CGPA'].mean())
+print(graduate_admission[graduate_admission['Chance_of_Admit']<0.4]['CGPA'].mean())
